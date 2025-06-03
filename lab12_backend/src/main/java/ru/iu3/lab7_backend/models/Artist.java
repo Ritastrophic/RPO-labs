@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 public class Artist {
 
     public Artist() { }
+
     public Artist(Long id) {
         this.id = id;
     }

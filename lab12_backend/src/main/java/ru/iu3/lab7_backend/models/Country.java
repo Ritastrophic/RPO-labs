@@ -12,6 +12,7 @@ import java.util.List;
 public class Country {
 
     public Country() { }
+
     public Country(Long id) {
         this.id = id;
     }
@@ -26,7 +27,7 @@ public class Country {
 
     @JsonIgnore
     @OneToMany(mappedBy = "country")
-    public List<Artist> artists = new ArrayList<Artist>();
+    public List<Artist> artists = new ArrayList<>();
 
     public String getName() {
         return this.name;

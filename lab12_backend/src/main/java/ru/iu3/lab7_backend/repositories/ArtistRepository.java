@@ -7,7 +7,7 @@ import ru.iu3.lab7_backend.models.Artist;
 import java.util.Optional;
 
 @Repository
-public interface ArtistRepository extends JpaRepository<Artist, Long> {
+    public interface ArtistRepository extends JpaRepository<Artist, Long> {
 
-    Optional<Artist> findByName(String name);
-}
+        Optional<Artist> findByName(String name);
+    }

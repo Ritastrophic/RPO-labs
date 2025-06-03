@@ -7,8 +7,7 @@ import ru.iu3.lab7_backend.models.Museum;
 import java.util.Optional;
 
 @Repository
-    public interface MuseumRepository  extends JpaRepository<Museum, Long>
-    {
+    public interface MuseumRepository  extends JpaRepository<Museum, Long> {
 
         Optional<Museum> findByName(String name);
     }

@@ -27,7 +27,8 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
 
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails,
-                                                  UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
+                                                  UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken)
+            throws AuthenticationException {
 
     }
 
@@ -38,28 +39,29 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
 
         Object token = usernamePasswordAuthenticationToken.getCredentials();
         Optional<ru.iu3.lab7_backend.models.User> uu = userRepository.findByToken(String.valueOf(token));
-        if (!uu.isPresent())
+        if (!uu.isPresent()) {
             throw new UsernameNotFoundException("user is not found");
+        }
         ru.iu3.lab7_backend.models.User u = uu.get();
 
         boolean timeout = true;
-        LocalDateTime dt  = LocalDateTime.now();
+        LocalDateTime dt = LocalDateTime.now();
         if (u.activity != null) {
             LocalDateTime nt = u.activity.plusMinutes(sessionTimeout);
-            if (dt.isBefore(nt))
+            if (dt.isBefore(nt)) {
                 timeout = false;
+            }
         }
         if (timeout) {
             u.token = null;
             userRepository.save(u);
             throw new NonceExpiredException("session is expired");
-        }
-        else {
+        } else {
             u.activity = LocalDateTime.now();
             userRepository.save(u);
         }
 
-        UserDetails user= new User(u.login, u.password,
+        UserDetails user = new User(u.login, u.password,
                 true,
                 true,
                 true,
@@ -67,6 +69,5 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
                 AuthorityUtils.createAuthorityList("USER"));
         return user;
     }
-
 
 }

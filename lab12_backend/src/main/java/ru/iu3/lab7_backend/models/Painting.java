@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 @Access(AccessType.FIELD)
 public class Painting {
 
-    Painting() {}
+    Painting() { }
 
     Painting(Long id) {
         this.id = id;

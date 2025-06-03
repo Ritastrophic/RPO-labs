@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 import ru.iu3.lab7_backend.models.Painting;
 
 @Repository
-public interface PaintingRepository  extends JpaRepository<Painting, Long>
-{
+    public interface PaintingRepository  extends JpaRepository<Painting, Long> {
 
-}
+    }

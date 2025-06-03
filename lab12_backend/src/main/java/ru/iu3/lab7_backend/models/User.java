@@ -13,6 +13,7 @@ import java.util.Set;
 public class User {
 
     public User() { }
+
     public User(Long id) {
         this.id = id;
     }
@@ -47,7 +48,7 @@ public class User {
 
     @Transient
     public String np;
-    
+
     public void addMuseum(Museum m) {
         this.museums.add(m);
         m.users.add(this);

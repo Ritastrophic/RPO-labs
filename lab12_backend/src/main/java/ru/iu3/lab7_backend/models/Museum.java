@@ -14,6 +14,7 @@ import java.util.Set;
 public class Museum {
 
     public Museum() { }
+
     public Museum(Long id) {
         this.id = id;
     }
@@ -30,14 +31,12 @@ public class Museum {
     public String location;
 
     @JsonIgnore
-    @OneToMany
-    public List<Painting>
-            paintings = new ArrayList<>();
+    @OneToMany(mappedBy = "museum")
+    public List<Painting> paintings = new ArrayList<>();
 
     @JsonIgnore
     @ManyToMany
     @JoinTable(name = "usersmuseums", joinColumns = @JoinColumn(name = "museumid"),
             inverseJoinColumns = @JoinColumn(name = "userid"))
-    public Set<User>
-            users = new HashSet<>();
+    public Set<User> users = new HashSet<>();
 }

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.iu3.lab7_backend.models.Artist;
@@ -14,8 +15,6 @@ import ru.iu3.lab7_backend.repositories.ArtistRepository;
 import ru.iu3.lab7_backend.repositories.MuseumRepository;
 import ru.iu3.lab7_backend.repositories.PaintingRepository;
 import ru.iu3.lab7_backend.tools.DataValidationException;
-
-import jakarta.validation.Valid;
 
 import java.util.HashMap;
 import java.util.List;
@@ -52,13 +51,13 @@ public class PaintingController {
         Map<String, String> map = new HashMap<>();
         for (Painting p : paintings) {
             try {
-                if (p.museum != null) {
+                if (p.museum.name != "") {
                     Optional<Museum> m = museumRepository.findByName(p.museum.name);
                     if (m.isPresent()) {
                         p.museum = m.get();
                     }
                 }
-                if (p.artist != null) {
+                if (p.artist.name != "") {
                     Optional<Artist> a = artistRepository.findByName(p.artist.name);
                     if (a.isPresent()) {
                         p.artist = a.get();
@@ -66,37 +65,44 @@ public class PaintingController {
                 }
                 Painting nm = paintingRepository.save(p);
                 map.put(nm.name, "success");
-                System.out.println("Полученные данные: " + paintings);
             } catch (Exception ex) {
                 String error;
-                if (ex.getMessage().contains("paintings_name_key")) {
-                    error = "paintingalreadyexists";
+                if (ex.getMessage().contains("Painting")) {
+                    error = "painting already exists";
+                } else if (ex.getMessage().contains("Artist")) {
+                    error = "Artist not found";
+                } else if (ex.getMessage().contains("Museum")) {
+                    error = "Museum not found";
                 } else {
                     error = "undefinederror";
                 }
-                map.put(p.name, error);
+                System.out.println(ex.getMessage());
+                map.put("data", error);
+                return ResponseEntity.status(HttpStatusCode.valueOf(400)).body(map);
             }
         }
         return ResponseEntity.ok(map);
     }
+
     @PutMapping("/paintings/{id}")
     public ResponseEntity<Painting> updatePainting(@PathVariable(value = "id") Long paintingId,
                                                    @RequestBody Painting paintingDetails) throws DataValidationException {
         try {
             Painting painting = paintingRepository.findById(paintingId)
-                    .orElseThrow(() -> new DataValidationException("Картина с таким индексом не найдена"));
+                    .orElseThrow(() -> new DataValidationException("Страна с таким индексом не найдена"));
             painting.name = paintingDetails.name;
             paintingRepository.save(painting);
             return ResponseEntity.ok(painting);
         } catch (Exception ex) {
-            if (ex.getMessage().contains("paintings_name_key"))
-                throw new DataValidationException("Эта картина уже есть в базе");
-            else
+            if (ex.getMessage().contains("paintings_name_key")) {
+                throw new DataValidationException("Эта страна уже есть в базе");
+            } else {
                 throw new DataValidationException("Неизвестная ошибка");
+            }
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/paintings/{id}")
     public ResponseEntity<Object> deletePainting(@PathVariable(value = "id") Long paintingId) {
         Optional<Painting> painting = paintingRepository.findById(paintingId);
         Map<String, Boolean> resp = new HashMap<>();

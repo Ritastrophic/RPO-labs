@@ -16,10 +16,12 @@ import ru.iu3.lab7_backend.repositories.UserRepository;
 import ru.iu3.lab7_backend.tools.Utils;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.web.bind.annotation.CrossOrigin;
+
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/auth")
 public class LoginController {
+
     @Autowired
     private UserRepository userRepository;
 
@@ -45,16 +47,16 @@ public class LoginController {
                         @JsonProperty("user")
                         User user = u3;
                     };
-                    return new ResponseEntity<Object>(uToSend, HttpStatus.OK);
+                    return new ResponseEntity<>(uToSend, HttpStatus.OK);
                 }
             }
         }
-        return new ResponseEntity<Object>(HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
-
     @GetMapping("/logout")
-    public ResponseEntity<Object> logout(@RequestHeader(value = "Authorization", required = false) String token) {
+    public ResponseEntity<Object> logout(
+            @RequestHeader(value = "Authorization", required = false) String token) {
         if (token != null && !token.isEmpty()) {
             token = StringUtils.removeStart(token, "Bearer").trim();
             Optional<User> uu = userRepository.findByToken(token);
